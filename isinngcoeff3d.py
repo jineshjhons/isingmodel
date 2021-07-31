@@ -1,5 +1,4 @@
 import math
-import copy
 import numpy as np
 import matplotlib.pyplot as plt
 
@@ -12,11 +11,9 @@ def hot_start():
     return spin
 
 
-def manual_start():
+def manual_start(row,col):
     spin =[1,-1,1,1,-1,1,1,-1,-1,-1,-1,1,-1,1,-1,-1]
-    return spin
-def cold_start():
-    spin =[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    spin = np.reshape(spin,(row,col))
     return spin
 # Measure magnetization
 def mag(spin):
@@ -28,8 +25,7 @@ def mag(spin):
 
 # Calculate KPI
 
-# temp = copy.deepcopy(a)
-
+     
 # Main
 
 # coeff = np.loadtxt('./coeff8_4x4_1_t.csv', delimiter=',')
@@ -152,72 +148,68 @@ def generate_random():
        
          
    return rh,rv   
-def kpi(spin, coeff, N):
+def kpi(spin, coeff, i,j):
     global n, ns
-    spin_temp = np.reshape(spin,(4,4))       
-
+    # print(" i is "+str(i)+" j is "+str(j))
     kpi_temp = 0
-    for i in range(8):
-        if coeff[N, i] != 0:
-            if i == 0:
-                kpi_temp = kpi_temp + coeff[N, i] * spin[N-n]
-            elif i == 1:
-                kpi_temp = kpi_temp + coeff[N, i] * spin[N-n+1]
-            elif i == 2:
-                kpi_temp = kpi_temp + coeff[N, i] * spin[N+1]
-            elif i == 3:
-                kpi_temp = kpi_temp + coeff[N, i] * spin[N+n+1]
-            elif i == 4:
-                kpi_temp = kpi_temp + coeff[N, i] * spin[N+n]
-            elif i == 5:
-                kpi_temp = kpi_temp + coeff[N, i] * spin[N+n-1]
-            elif i == 6:
-                kpi_temp = kpi_temp + coeff[N, i]  * spin[N-1]
-            elif i == 7:
-                kpi_temp = kpi_temp + coeff[N, i]  * spin[N-n-1]
-              
+    for k in range(8):
+        if coeff[k] != 0:
+            if k == 0:
+                kpi_temp = kpi_temp + coeff[k] * spin[i-1][j]
+            elif k == 1:
+                kpi_temp = kpi_temp + coeff[k] * spin[i-1][j+1]
+            elif k == 2:
+                kpi_temp = kpi_temp + coeff[k] * spin[i][j+1]
+            elif k == 3:
+                kpi_temp = kpi_temp + coeff[k] * spin[i+1][j+1]
+            elif k == 4:
+                kpi_temp = kpi_temp + coeff[k] * spin[i+1][j]
+            elif k == 5:
+                kpi_temp = kpi_temp + coeff[k] * spin[i+1][j-1]
+            elif k == 6:
+                kpi_temp = kpi_temp + coeff[k]  * spin[i][j-1]
+            elif k == 7:
+                kpi_temp = kpi_temp + coeff[k]  * spin[i-1][j-1]
+            
+
+       
     # 
     return kpi_temp
 
 # The main Monte Carlo Loop
 
 # beta represents 1/kT
+# i is row and j is column
 def update(spin,rh,rv):
-    global n, ns  
-   
-    spin_pre =[]
-    # for x in spin:
-    #     spin_pre.append(x)
     spin_pre = np.copy(spin)
-
-    for i in range(ns):
-        
-        rval = i%4
-        kp = kpi(spin_pre, coeff, i)
-        print(kp)
-        w=3
-        E =  kp + w*rh[rval] + w*rv[rval]    
-        if E > 0:
-            spin[i] = +1
-        else:
-            spin[i] = -1 
+    
+    for i in range(n):
+        for j in range(n):
+            
+            rval = i%4
+            kp = kpi(spin_pre, coeff[i][j], i,j)
+            print(kp)
+            w=3
+            E =  kp + w*rh[rval] + w*rv[rval]    
+            if E > 0:
+                spin[i][j] = +1
+            else:
+                spin[i][j] = -1   
     return spin
 Rh, Rv = generate_random()       
 image = np.loadtxt('./coeff8_4x4_2_t.csv', delimiter=',')
 n = image.shape
 nx = n[0]
 ny = n[1]
-tcoeff =[]
+tcoeff = np.empty([nx,ny,8])
 
     
 
         
 for i in range(nx):
     for j in range(ny):
-        print(" i is "+str(i)+" j is "+str(j))
-
         temp = array(image,i,j)
-        tcoeff.append(temp)
+        tcoeff[i][j] =temp
 print(tcoeff)        
 coeff =  np.array(tcoeff)
 
@@ -230,20 +222,21 @@ step = 0.01
 
 print(f"Size = {n}")
 print(f"iteration = {iteration}")
-spin = manual_start()
+spin = manual_start(n,n)
 out = np.zeros(iteration)
 betadata =[]
 
-for i in range(iteration):
-    ranh =Rh[i]
-    ranv = Rv[i]
+for k in range(iteration):
+    ranh =Rh[k]
+    ranv = Rv[k]
     spin = update(spin,ranh,ranv)
     spin_temp = np.reshape(spin,(4,4))       
-    for j in range(ns):
-        rval = j%4
-        out[i] = out[i] -(1*spin[j] *kpi(spin, coeff, j))
-        # print(out[i])
-        
+    for i in range(n):
+        for j in range(n):            
+            rval = j%4
+            out[k] = out[k] -(1*spin[i][j] *kpi(spin, coeff[i][j],i,j))
+            # print(out[k])
+            
 print(out)
 
 new_spin  = np.array(spin)
