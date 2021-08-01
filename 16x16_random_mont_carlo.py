@@ -1,13 +1,21 @@
+# -*- coding: utf-8 -*-
+"""
+Created on Fri Jul 30 17:20:29 2021
+
+@author: JineshJhonsa
+"""
+
 import math
 import numpy as np
 import matplotlib.pyplot as plt
 
 # Set initial spins
-def hot_start():
+def hot_start(x,y):
     global ns
     spin = np.random.randint(0, 2, ns)
     spin[spin == 0] = -1
-
+    spin = np.reshape(spin,(x,y))
+    
     return spin
 
 
@@ -122,19 +130,40 @@ def array(image,i,j):
     arr.append(northwest(image,i,j))
     return arr
 
+
+
+def generate_linear_random(n):
+    beta = 0.5
+    step = 0.5/1000
+    rh = np.empty([1000,n])
+    rv = np.empty([1000,n])
+    for x in range(1000):
+        beta =beta +step
+        hori = np.random.rand(n) -beta
+        h = np.where(hori>0,1,-1)
+        rh[x] =h 
+        vert = np.random.rand(n) -(1-beta)
+        v = np.where(vert>0,1,-1)
+        rv[x] =v
+    return rh,rv
+        
 def generate_random(n):
-   anneal = 30 
-   is_anneal =100
-   ising =200
-   rh = np.empty([200,n],dtype = int)
-   rv = np.empty([200,n],dtype = int)
+   anneal = 100
+   is_anneal =400
+   ising =500
+   rh = np.empty([500,n],dtype = int)
+   rv = np.empty([500,n],dtype = int)
+   
    for x in range(anneal):
-       if x %2 ==0:
-           rh[x] = [1,-1,1,-1]
-           rv[x] = [-1,1,-1,1]
-       else:
-           rh[x] = [-1,1,-1,1]
-           rv[x] = [1,-1,1,-1]
+       
+       rh[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+       rv[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+       # if x %100 ==0:
+       #     rh[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+       #     rv[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+       # else:
+       #     rh[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+       #     rv[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 
    for y in range(anneal,is_anneal):
        rh_rand = np.random.randint(2, size=n)
@@ -143,8 +172,8 @@ def generate_random(n):
        rv[y] = np.where(rv_rand == 0, -1, rv_rand)
    for z in range(is_anneal,ising):
        
-        rh[z] = [-1,-1,-1,-1]
-        rv[z] = [1,1,1,1]
+        rh[z] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+        rv[z] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
        
          
    return rh,rv   
@@ -181,7 +210,9 @@ def kpi(spin, coeff, i,j):
 # beta represents 1/kT
 # i is row and j is column
 def update(spin,rh,rv):
+    global kp_prev1,kp_prev2
     spin_pre = np.copy(spin)
+    kp_prev =0
     
     for i in range(n):
         for j in range(n):
@@ -189,26 +220,30 @@ def update(spin,rh,rv):
             rval = i%4
             kp = kpi(spin_pre, coeff[i][j], i,j)
             print(kp)
-            w=3
-            E =  kp + w*rh[rval] + w*rv[rval]    
+            kp1 = kp - kp_prev1[i][j] 
+            
+            kp_prev1[i][j] = kp
+            w=8
+            E =  -kp1 + w*rh[rval] + w*rv[rval]    
             if E > 0:
                 spin[i][j] = +1
             else:
                 spin[i][j] = -1   
     return spin
-n = 4
+n = 16
 ns = n*n
-iteration = 200
+iteration = 1000
 beta = 0
 step = 0.01
-Rh, Rv = generate_random(n)       
-image = np.loadtxt('./coeff8_4x4_2_t.csv', delimiter=',')
+Rh, Rv = generate_linear_random(n)       
+image = np.loadtxt('./coeff8_16x16.csv', delimiter=',')
 no = image.shape
 nx = no[0]
 ny = no[1]
 tcoeff = np.empty([nx,ny,8])
+kp_prev1 = np.zeros([n,n])
+kp_prev2 = np.zeros([n,n])
 
-    
 
         
 for i in range(nx):
@@ -223,10 +258,10 @@ coeff =  np.array(tcoeff)
 
 print(f"Size = {n}")
 print(f"iteration = {iteration}")
-spin = manual_start(n,n)
+spin = hot_start(n,n)
 out = np.zeros(iteration)
 betadata =[]
-
+kp_prev =[]
 for k in range(iteration):
     ranh =Rh[k]
     ranv = Rv[k]
@@ -236,15 +271,16 @@ for k in range(iteration):
         for j in range(n):            
             rval = j%4
             out[k] = out[k] -(1*spin[i][j] *kpi(spin, coeff[i][j],i,j))
+            
             # print(out[k])
             
 print(out)
-
+print(np.min(out))
 new_spin  = np.array(spin)
 spin_2d = np.reshape(new_spin,(n,n))       
 plt.figure(figsize=(10, 6))
 plt.plot(out)
-plt.title('4x4 Spin2 by CPU, GM = -33', fontsize=18)
+plt.title('16x16 Spin2 by CPU', fontsize=18)
 plt.xlabel('Iteration', fontsize=10)
 plt.ylabel('out', fontsize=10)
 plt.grid()
