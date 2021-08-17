@@ -1,0 +1,9 @@
+simulator lang=spectre
+vinit_0 (INIT0 VSS) vsource dc=0.8 
+vinit_1(INIT1 VSS) vsource dc=0.8 
+vinit_2 (INIT2 VSS) vsource dc=0.8 
+vinit_3 (INIT3 VSS) vsource dc=0 
+a_3 (a\<3\> VSS) vsource dc=0.8 
+a_2(a\<2\> VSS) vsource dc=0
+a_1 (a\<1\> VSS) vsource dc=0 
+a_0 (a\<0\> VSS) vsource dc=0.8 

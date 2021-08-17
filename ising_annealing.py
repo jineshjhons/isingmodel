@@ -15,7 +15,6 @@ def hot_start(x,y):
     spin = np.random.randint(0, 2, ns)
     spin[spin == 0] = -1
     spin = np.reshape(spin,(x,y))
-    
     return spin
 
 
@@ -128,10 +127,86 @@ def array(image,i,j):
     arr.append(southwest(image,i,j))    
     arr.append(west(image,i,j))
     arr.append(northwest(image,i,j))
+
     return arr
 
+def generate_random(n,it):
+   anneal = 100
+   is_anneal =400
+   ising  = 1000
+   rh = np.empty([it,n],dtype = int)
+   rv = np.empty([it,n],dtype = int)
+   for x in range(anneal):
+       
+       rh[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+       rv[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+       # if x %100 ==0:
+       #     rh[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+       #     rv[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+       # else:
+       #     rh[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+       #     rv[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 
+   for y in range(anneal,is_anneal):
+       rh_rand = np.random.randint(2, size=n)
+       rv_rand = np.random.randint(2, size=n)
+       rh[y] = np.where(rh_rand == 0, -1, rh_rand)
+       rv[y] = np.where(rv_rand == 0, -1, rv_rand)
+   for z in range(is_anneal,ising):
+       
+        rh[z] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+        rv[z] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    
+         
+   return rh,rv   
 
+def RndGen(n, iteration):
+    x = int(iteration / 5)
+    rnd = np.random.rand(iteration)
+    for i in range(x):
+        if rnd[i] > 0.5:
+            rnd[i] = 1
+        else:
+            rnd[i] = -1
+    for i in range(x, 2*x):
+        if rnd[i] > 0.8:
+            rnd[i] = 0
+        elif rnd[i] <= 0.8 and rnd[i] > 0.4:
+            rnd[i] = 1
+        else:
+            rnd[i] = -1
+    for i in range(2*x, 3*x):
+        if rnd[i] > 0.6:
+            rnd[i] = 0
+        elif rnd[i] <= 0.6 and rnd[i] > 0.3:
+            rnd[i] = 1
+        else:
+            rnd[i] = -1
+    for i in range(3*x, 4*x):
+        if rnd[i] > 0.2:
+            rnd[i] = 0
+        elif rnd[i] <= 0.2 and rnd[i] > 0.1:
+            rnd[i] = 1
+        else:
+            rnd[i] = -1
+    for i in range(4*x, iteration):
+        rnd[i] = 0
+    rh = np.empty([iteration,n])
+    rv = np.empty([iteration,n])   
+    for x in range(iteration):
+        if x == -1:
+            
+            rh[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+            rv[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+            
+        elif x ==1:
+            rh[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+            rv[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+        elif x ==0:
+            rh[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
+            rv[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
+    
+    return rh,rv
 def generate_linear_random(n,it):
     final =0
     y = it-final
@@ -160,37 +235,7 @@ def generate_linear_random(n,it):
             
         
     return rh,rv
-        
-def generate_random(n):
-   anneal = 100
-   is_anneal =400
-   ising =500
-   rh = np.empty([500,n],dtype = int)
-   rv = np.empty([500,n],dtype = int)
-   
-   for x in range(anneal):
-       
-       rh[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-       rv[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-       # if x %100 ==0:
-       #     rh[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-       #     rv[x] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-       # else:
-       #     rh[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-       #     rv[x] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
 
-   for y in range(anneal,is_anneal):
-       rh_rand = np.random.randint(2, size=n)
-       rv_rand = np.random.randint(2, size=n)
-       rh[y] = np.where(rh_rand == 0, -1, rh_rand)
-       rv[y] = np.where(rv_rand == 0, -1, rv_rand)
-   for z in range(is_anneal,ising):
-       
-        rh[z] = [-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1]
-        rv[z] = [1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1]
-       
-         
-   return rh,rv   
 def kpi(spin, coeff, i,j):
     
     # print(" i is "+str(i)+" j is "+str(j))
@@ -224,26 +269,24 @@ def kpi(spin, coeff, i,j):
 # beta represents 1/kT
 # i is row and j is column
 def update(spin,rh,rv):
-    global kp_prev1,kp_prev2
+    global n
     spin_pre = np.copy(spin)
-    kp_prev =0
     
     for i in range(n):
         for j in range(n):
             
-            rval = i%4
+            ri = i%n
+            rj = j%n
             kp = kpi(spin_pre, coeff[i][j], i,j)
             # print(kp)
-            kp1 = kp - kp_prev1[i][j] 
-            
-            kp_prev1[i][j] = kp
-            w=4
-            E =  -kp1 + w*rh[rval] + w*rv[rval]    
+            w=8
+            E =  kp + w*rh[ri] + w*rv[rj]    
             if E > 0:
                 spin[i][j] = +1
             else:
                 spin[i][j] = -1   
     return spin
+
 
 def latticeneg(n):
     coeff = np.zeros([n*n, 8])
@@ -304,42 +347,43 @@ def CoeffGen(n):
     coeff = Four2Eight(n, coeff)
     temp = np.reshape(coeff,(n,n,8))
     return temp
-
+    
 n = 16
 ns = n*n
 iteration = 1000
 beta = 0
 step = 0.01
+   
 image = np.loadtxt('./coeff8_16x16.csv', delimiter=',')
 no = image.shape
 nx = no[0]
 ny = no[1]
 tcoeff = np.empty([nx,ny,8])
+
+    
+
+        
 for i in range(nx):
     for j in range(ny):
-            temp = array(image,i,j)
-            tcoeff[i][j] =temp
-print(tcoeff)        
+        temp = array(image,i,j)
+        tcoeff[i][j] =temp
+print(tcoeff) 
+lastnumber =[]   
+pfnumber =[]    
 coeff =  CoeffGen(n)
-lastnumber =[]
-pfnumber =[]
-for z in range(5): 
-    Rh, Rv = generate_linear_random(n,iteration)       
-    kp_prev1 = np.zeros([n,n])
-    kp_prev2 = np.zeros([n,n])
 
-    
-    
-    
-    
-    
 
-    print(f"iteration = {z}")
-    print(z)
+
+for te in range(5):
+    
+    print(f"Size = {n}")
+    print(f"iteration = {iteration}")
+    print(te)
+    Rh, Rv = generate_linear_random(n,iteration)    
     spin = hot_start(n,n)
     out = np.zeros(iteration)
     betadata =[]
-    kp_prev =[]
+    
     for k in range(iteration):
         ranh =Rh[k]
         ranv = Rv[k]
@@ -349,14 +393,14 @@ for z in range(5):
             for j in range(n):            
                 rval = j%4
                 out[k] = out[k] -(1*spin[i][j] *kpi(spin, coeff[i][j],i,j))
-                
                 # print(out[k])
-    minval = np.min(out)            
+                
     print(out)
-    print(out[-1])
+    minval = np.min(out)
     print(minval)
-    lastnumber.append(out[-1])  
+    
     pfnumber.append(minval)
+    lastnumber.append(out[-1])
     new_spin  = np.array(spin)
     spin_2d = np.reshape(new_spin,(n,n))       
     plt.figure(figsize=(10, 6))

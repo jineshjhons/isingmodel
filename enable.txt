@@ -1,0 +1,8 @@
+simulator lang=spectre
+vclk (CLK VSS) vsource type=pulse val0=0 val1=0.8 delay=25n rise= 0.02n fall= 0.02n width=5n period=10n
+vs_en (EN VSS) vsource type=pulse val0=0 val1=0.8 delay=30n rise= 0.02n fall= 0.02n width=10n period=20n
+vspc (SPC VSS) vsource type=pulse val0=0 val1=0.8 delay=30n rise= 0.02n fall= 0.02n width=10n period=20n
+vmux_en (MUX_EN VSS) vsource type=pulse val0=0 val1=0.8 delay=40n rise= 0.02n fall= 0.02n width=9u period=10u
+vpc (PC VSS) vsource type=pulse val0=0 val1=0.8 delay=30n rise= 0.02n fall= 0.02n width=15n period=20n
+vsrl (SWL VSS) vsource type=pulse val0=0 val1=0.8 delay=30n rise= 0.02n fall= 0.02n width=10n period=20n
+vsa_en (SA_EN VSS) vsource type=pulse val0=0 val1=0.8 delay=40n rise= 0.02n fall= 0.02n width=10n period=20n
