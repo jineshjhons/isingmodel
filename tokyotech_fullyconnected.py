@@ -70,7 +70,7 @@ tcoeff = np.empty([nx,ny,ns])
 #             tcoeff[i][j] =temp
 # print(tcoeff)        
 # coeff =  CoeffGen(n)
-loaded_arr = np.loadtxt('tcoeff.txt')
+loaded_arr = np.loadtxt('rcoeff.txt')
 tcoeff =loaded_arr.reshape((16,16,256))
 coeff = tcoeff
 lastnumber =[]

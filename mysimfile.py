@@ -39,7 +39,7 @@ wblr.write('simulator lang=spectre\n')
 
 wwl.write('va3 (a\\<3\\> VSS) vsource dc=0 \n')
 wwl.write('va2 (a\\<2\\> VSS) vsource dc=0 \n')
-wwl.write('va1 (a\\<1\\> VSS) vsource dc=0.8 \n')
+wwl.write('va1 (a\\<1\\> VSS) vsource dc=0 \n')
 wwl.write('va0 (a\\<0\\> VSS) vsource dc=0.8 \n')
 
 

@@ -142,11 +142,8 @@ def update(spin,rh,rv):
             
             rval = i%n
             kp = kpi(spin_pre, coeff[i][j])
-            # print(kp)
-            # kp1 = kp - kp_prev1[i][j] 
-            
-            # kp_prev1[i][j] = kp
-            w=100
+     
+            w=50
             E =  kp + w*rh[i] + w*rv[j]    
             if E > 0:
                 spin[i][j] = +1
@@ -155,20 +152,11 @@ def update(spin,rh,rv):
     return spin
 n = 16
 ns = n*n
-iteration = 750
+iteration = 50
 
 beta = 0
 step = 0.01
-image = np.loadtxt('./coeff8_16x16.csv', delimiter=',')
-no = image.shape
-nx = no[0]
-ny = no[1]
-tcoeff = np.empty([nx,ny,ns])
-# for i in range(nx):
-#     for j in range(ny):
-#             temp = generate_random_coefficient(i,j,n)
-#             tcoeff[i][j] =temp
-# print(tcoeff)        
+     
 # coeff =  CoeffGen(n)
 loaded_arr = np.loadtxt('tcoeff.txt')
 tcoeff =loaded_arr.reshape((16,16,256))
@@ -195,7 +183,7 @@ for z in range(1):
         spin_temp = np.reshape(spin,(n,n))       
         for i in range(n):
             for j in range(n):            
-                out[k] = out[k] -(1*spin[i][j] *kpi(spin, coeff[i][j]))
+                out[k] = out[k] +(1*spin[i][j] *kpi(spin, coeff[i][j]))
                 
                 # print(out[k])
     minval = np.min(out)            
