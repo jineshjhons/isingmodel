@@ -90,7 +90,7 @@ def update2(spin,rh,rv):
     return spin
 n = 256
 
-iteration = 50
+iteration = 500
 
 beta = 0
 step = 0.01
