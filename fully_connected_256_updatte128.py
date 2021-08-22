@@ -78,25 +78,26 @@ def update1(spin,rh,rv):
             spin[i] = -1   
     return spin
 def update2(spin,rh,rv):
+    global w
     spin_pre = np.copy(spin)   
     for i in range(128,256):
         kp = kpi(spin_pre, coeff[i])
-        w=50
+  
         E =  kp + w*rh[i] + w*rv[i]    
         if E > 0:
             spin[i] = +1
         else:
             spin[i] = -1   
     return spin
-n = 256
-
-iteration = 500
+n = 800
+w = 0
+iteration = 100
 
 beta = 0
 step = 0.01
      
 # coeff =  CoeffGen(n)
-loaded_arr = np.loadtxt('pcoeff.txt')
+loaded_arr = np.loadtxt('g1coeff.txt')
 coeff = loaded_arr
 lastnumber =[]
 pfnumber =[]
@@ -121,7 +122,7 @@ for z in range(1):
                      
             out[k] = out[k] -(1*spin[i] *kpi(spin, coeff[i]))
                 
-                # print(out[k])
+        print(out[k])
     minval = np.min(out)            
     print(out)
     print(out[-1])
@@ -129,10 +130,10 @@ for z in range(1):
     lastnumber.append(out[-1])  
     pfnumber.append(minval)
     new_spin  = np.array(spin)
-   
+    titl = '256 Spin fully connected 128 update  W = '+str(w)+' iteration ='+str(iteration)
     plt.figure(figsize=(10, 6))
     plt.plot(out)
-    plt.title('256 Spin by CPU', fontsize=18)
+    plt.title(titl, fontsize=18)
     plt.xlabel('Iteration', fontsize=10)
     plt.ylabel('out', fontsize=10)
     plt.grid()

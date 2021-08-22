@@ -131,13 +131,13 @@ def kpi(spin, coeff):
 
 
 def update(spin,rh,rv):
-    global kp_prev
+    global kp_prev,w
     spin_pre = np.copy(spin)   
     for i in range(n):
         kp = kpi(spin_pre, coeff[i])
         kp1 = kp + kp_prev[i]
         kp_prev[i] =kp
-        w=50
+       
         E =  kp1 + w*rh[i] + w*rv[i]    
         if E > 0:
             spin[i] = +1
@@ -145,8 +145,8 @@ def update(spin,rh,rv):
             spin[i] = -1   
     return spin
 n = 256
-
-iteration = 500
+w =50
+iteration = 1500
 
 beta = 0
 step = 0.01
@@ -184,11 +184,11 @@ for z in range(1):
     lastnumber.append(out[-1])  
     pfnumber.append(minval)
     new_spin  = np.array(spin)
-   
+    titl = '256 Spin fully connected 256 update  W = '+str(w)+' iteration ='+str(iteration)
     plt.figure(figsize=(10, 6))
     plt.plot(out)
     print('fullyconnected 256 with pre kpi')
-    plt.title('256 Spin by CPU', fontsize=18)
+    plt.title(titl, fontsize=18)
     plt.xlabel('Iteration', fontsize=10)
     plt.ylabel('out', fontsize=10)
     plt.grid()
