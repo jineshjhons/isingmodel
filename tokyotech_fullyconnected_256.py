@@ -111,9 +111,9 @@ n = 800
 #             tcoeff[i][j] =temp
 # print(tcoeff)        
 # coeff =  CoeffGen(n)
-loaded_arr = np.loadtxt('g6coeff.txt')
+loaded_arr = np.loadtxt('G1coeff.txt')
 
-coeff = loaded_arr
+coeff =  np.where(loaded_arr ==1,-1,0)
 lastnumber =[]
 pfnumber =[]
 stot=560

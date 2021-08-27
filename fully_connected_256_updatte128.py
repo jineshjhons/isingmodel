@@ -97,7 +97,7 @@ beta = 0
 step = 0.01
      
 # coeff =  CoeffGen(n)
-loaded_arr = np.loadtxt('g1coeff.txt')
+loaded_arr = np.loadtxt('G1coeff.txt')
 coeff = loaded_arr
 lastnumber =[]
 pfnumber =[]

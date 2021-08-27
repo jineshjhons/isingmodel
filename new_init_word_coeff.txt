@@ -1,0 +1,5 @@
+simulator lang=spectre
+vsram_0 (INIT\<0\> VSS) vsource dc=0.8 
+vsram_1 (INIT\<1\> VSS) vsource dc=0 
+vsram_2 (INIT\<2\> VSS) vsource dc=0.8 
+vsram_3 (INIT\<3\> VSS) vsource dc=0.8 

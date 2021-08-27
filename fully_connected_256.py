@@ -88,16 +88,18 @@ def update(spin,rh,rv):
         else:
             spin[i] = -1   
     return spin
+
 n = 800
-w =0 
-iteration = 20
+w =3
+iteration = 1200
 
 beta = 0
 step = 0.01
      
 # coeff =  CoeffGen(n)
 loaded_arr = np.loadtxt('G1coeff.txt')
-coeff = loaded_arr
+
+coeff = np.where(loaded_arr ==1,-1,0)
 lastnumber =[]
 pfnumber =[]
 for z in range(1): 
